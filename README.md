@@ -6,88 +6,11 @@
 
 This is an unofficial implementation of **Palette: Image-to-Image Diffusion Models** by **Pytorch**, and it is mainly inherited from its super-resolution version [Image-Super-Resolution-via-Iterative-Refinement](https://github.com/Janspiry/Image-Super-Resolution-via-Iterative-Refinement). The code template is from my another seed project: [distributed-pytorch-template](https://github.com/Janspiry/distributed-pytorch-template).
 
-There are some implementation details with paper descriptions:
-
-- We adapted the U-Net architecture used in  `Guided-Diffusion`, which give a substantial boost to sample quality.
-- We used the attention mechanism in low-resolution features (16×16) like vanilla `DDPM`.
-- We encode the $\gamma$ rather than $t$ in `Palette` and embed it with affine transformation.
-- We fix the variance $Σ_\theta(x_t, t)$ to a constant during the inference as described in `Palette`.
-
-## Status
-
-### Code
-- [x] Diffusion Model Pipeline
-- [x] Train/Test Process
-- [x] Save/Load Training State
-- [x] Logger/Tensorboard
-- [x] Multiple GPU Training (DDP)
-- [x] EMA
-- [x] Metrics (now for FID, IS)
-- [x] Dataset (now for inpainting, uncropping, colorization)
-- [x] Google colab script 🌟(now for inpainting)
-
-### Task
-
-I try to finish following tasks in order:
-- [x] Inpainting on [CelebaHQ](https://drive.google.com/drive/folders/1CjZAajyf-jIknskoTQ4CGvVkAigkhNWA?usp=sharing)🚀 ([Google Colab](https://colab.research.google.com/drive/1wfcd6QKkN2AqZDGFKZLyGKAoI5xcXUgO#scrollTo=8VFpuekybeQK))
-- [x] Inpainting on [Places2 with 128×128 centering mask](https://drive.google.com/drive/folders/1fLyFtrStfEtyrqwI0N_Xb_3idsf0gz0M?usp=sharing)🚀
-
-The follow-up experiment is uncertain, due to lack of time and GPU resources:
-
-- [ ] Uncropping on Places2
-- [ ] Colorization on ImageNet val set 
-
-## Results
-
-The DDPM model requires significant computational resources, and we have only built a few example models to validate the ideas in this paper.
-
-### Visuals
-
-#### Celeba-HQ
-
-Results with 200 epochs and 930K iterations, and the first 100 samples in [centering mask](https://drive.google.com/drive/folders/10zyHZtYV5vCht2MGNCF8WzpZJT2ae2RS?usp=sharing) and [irregular mask](https://drive.google.com/drive/folders/1vmSI-R9J2yQZY1cVkSSZlTYil2DprzvY?usp=sharing). 
-
-| ![Process_02323](misc//image//Process_02323.jpg) |    ![Process_02323](misc//image//Process_26190.jpg)  |
-| ------------------------------------------------ | ---- |
-
-#### Places2 with 128×128 centering mask
-
-Results with 16 epochs and 660K iterations, and the several **picked** samples in [centering mask](https://drive.google.com/drive/folders/1XusKO0_M6GUfPG-FOlID0Xcp0SiexKNe?usp=sharing).
-
-| ![Mask_Places365_test_00209019.jpg](misc//image//Mask_Places365_test_00209019.jpg) | ![Mask_Places365_test_00143399.jpg](misc//image//Mask_Places365_test_00143399.jpg) | ![Mask_Places365_test_00263905.jpg](misc//image//Mask_Places365_test_00263905.jpg) |  ![Mask_Places365_test_00144085.jpg](misc//image//Mask_Places365_test_00144085.jpg)    |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ---- |
-| ![Out_Places365_test_00209019](misc//image//Out_Places365_test_00209019.jpg) | ![Out_Places365_test_00143399.jpg](misc//image//Out_Places365_test_00143399.jpg) | ![Out_Places365_test_00263905.jpg](misc//image//Out_Places365_test_00263905.jpg) | ![Out_Places365_test_00144085.jpg](misc//image//Out_Places365_test_00144085.jpg)    |
-
-#### Uncropping on Places2
-
-Results with 8 epochs and 330K iterations, and the several  **picked** samples in [uncropping](https://drive.google.com/drive/folders/1tC3B8ayaadhXAJrOCTrw15R8t84REPWJ?usp=sharing).
-| ![Process_Places365_test_00309553](misc//image//Process_Places365_test_00309553.jpg) |    ![Process_Places365_test_00042384](misc//image//Process_Places365_test_00042384.jpg)  |
-| ------------------------------------------------ | ---- |
-
-
-### Metrics
-
-| Tasks        | Dataset | EMA | FID(-) | IS(+) |
-| -------------------- | ----------- | -------- | ---- | -------------------- |
-| Inpainting with centering mask | Celeba-HQ | False | 5.7873 | 3.0705 |
-| Inpainting with irregular mask | Celeba-HQ | False | 5.4026 | 3.1221 |
-
 ## Usage
 ### Environment
 ```python
 pip install -r requirements.txt
 ```
-
-### Pre-trained Model
-
-| Dataset   | Task       | Iterations | GPUs×Days×Bs | URL                                                          |
-| --------- | ---------- | ---------- | ------------ | ------------------------------------------------------------ |
-| Celeba-HQ | Inpainting | 930K       | 2×5×3        | [Google Drive](https://drive.google.com/drive/folders/13YZ2UAmGJ-b7DICr-FDAPM7gctreJEoH?usp=sharing) |
-| Places2   | Inpainting | 660K       | 4×8×10       | [Google Drive](https://drive.google.com/drive/folders/1Vz_HC0LcpV6yMLOd-SXyoaqJHtxyPBxZ?usp=sharing) |
-
-**Bs** indicates sample size per gpu.
-
-
 
 ### Data Prepare
 
